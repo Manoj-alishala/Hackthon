@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Attendance Management System - Enterprise Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="description" content="High-performance college attendance management with real-time analytics">
+</head>
+<body>
+    <!-- Loading Screen with Performance Metrics -->
+    <div id="loading-screen" class="screen loading-screen active">
+        <div class="loading-container">
+            <div class="loading-header">
+                <h1>CAMS Enterprise</h1>
+                <p>Loading high-performance attendance system...</p>
+            </div>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">Initializing system...</div>
+            </div>
+            <div class="system-metrics">
+                <div class="metric-item">
+                    <span class="metric-label">Server Response</span>
+                    <span class="metric-value" id="server-response">0ms</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Database Connection</span>
+                    <span class="metric-value" id="db-connection">Connecting...</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Cache Status</span>
+                    <span class="metric-value" id="cache-status">Initializing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Dashboard (Pre-login) -->
+    <div id="performance-screen" class="screen performance-screen">
+        <div class="performance-container">
+            <div class="performance-header">
+                <h1>System Performance Monitor</h1>
+                <p>Real-time system health and performance metrics</p>
+                <button class="btn btn--primary continue-btn" id="continue-to-login">Continue to Login</button>
+            </div>
+            <div class="performance-grid">
+                <div class="performance-card">
+                    <h3>Server Metrics</h3>
+                    <div class="metric-row">
+                        <span>CPU Usage</span>
+                        <span id="perf-cpu">45.2%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Memory Usage</span>
+                        <span id="perf-memory">67.8%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Active Connections</span>
+                        <span id="perf-connections">247</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Response Time</span>
+                        <span id="perf-response">120ms</span>
+                    </div>
+                </div>
+                <div class="performance-card">
+                    <h3>Database Performance</h3>
+                    <div class="metric-row">
+                        <span>Queries/min</span>
+                        <span id="perf-queries">1,450</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Cache Hit Ratio</span>
+                        <span id="perf-cache-hit">94.2%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Disk Usage</span>
+                        <span id="perf-disk">34.1%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Uptime</span>
+                        <span id="perf-uptime">99.97%</span>
+                    </div>
+                </div>
+                <div class="performance-card">
+                    <h3>Application Performance</h3>
+                    <div class="metric-row">
+                        <span>Page Load Time</span>
+                        <span id="perf-page-load">850ms</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>First Paint</span>
+                        <span id="perf-first-paint">450ms</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Time to Interactive</span>
+                        <span id="perf-tti">1.2s</span>
+                    </div>
+                    <div class="metric-row">
+                        <span>Error Rate</span>
+                        <span id="perf-error-rate">0.03%</span>
+                    </div>
+                </div>
+                <div class="performance-card">
+                    <h3>Real-time Activity</h3>
+                    <div class="chart-container" style="position: relative; height: 180px;">
+                        <canvas id="realtime-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen">
+        <div class="welcome-container">
+            <div class="welcome-header">
+                <h1>College Attendance Management System</h1>
+                <p class="subtitle">Enterprise Edition with Performance Optimization</p>
+                <div class="system-status">
+                    <div class="status-indicator status-online"></div>
+                    <span>All systems operational</span>
+                </div>
+            </div>
+            <div class="role-selection">
+                <button class="role-btn" data-role="student">
+                    <div class="role-icon">👨‍🎓</div>
+                    <h3>Student Portal</h3>
+                    <p>Access attendance records with real-time QR scanning</p>
+                    <div class="role-stats">Active: 247 students</div>
+                </button>
+                <button class="role-btn" data-role="faculty">
+                    <div class="role-icon">👨‍🏫</div>
+                    <h3>Faculty Portal</h3>
+                    <p>Advanced class management and analytics</p>
+                    <div class="role-stats">Online: 25 faculty</div>
+                </button>
+                <button class="role-btn" data-role="admin">
+                    <div class="role-icon">👨‍💼</div>
+                    <h3>Administrator</h3>
+                    <p>System-wide monitoring and analytics</p>
+                    <div class="role-stats">8 active classes</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Student Login with MFA -->
+    <div id="student-login" class="screen login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Student Secure Login</h2>
+                <p>Multi-factor authentication enabled</p>
+                <div class="security-indicators">
+                    <span class="security-badge">🔒 SSL Secured</span>
+                    <span class="security-badge">🛡️ MFA Protected</span>
+                </div>
+            </div>
+            <form class="login-form" id="student-login-form">
+                <div class="form-group">
+                    <label class="form-label" for="student-username">Username/Student ID</label>
+                    <input type="text" id="student-username" class="form-control" placeholder="Enter username or student ID" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="student-password">Password</label>
+                    <input type="password" id="student-password" class="form-control" placeholder="Enter password" required autocomplete="current-password">
+                    <div class="password-strength" id="password-strength"></div>
+                </div>
+                <div class="form-group mfa-section" id="mfa-section" style="display: none;">
+                    <label class="form-label" for="mfa-code">Authentication Code</label>
+                    <input type="text" id="mfa-code" class="form-control" placeholder="6-digit code from authenticator app" maxlength="6">
+                    <small>Check your mobile authenticator app</small>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="student-remember">
+                        Remember this device for 30 days
+                    </label>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width" id="student-login-btn">
+                    <span class="btn-text">Login</span>
+                    <span class="btn-loader" style="display: none;">🔄</span>
+                </button>
+                <div class="login-links">
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                    <button type="button" class="btn btn--outline back-btn">Back to Selection</button>
+                </div>
+                <div class="login-performance">
+                    <small>Login processed in <span id="login-time">0ms</span></small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Faculty Login -->
+    <div id="faculty-login" class="screen login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Faculty Secure Portal</h2>
+                <p>Enhanced security for educational staff</p>
+                <div class="security-indicators">
+                    <span class="security-badge">🔒 Enterprise Security</span>
+                    <span class="security-badge">📊 Performance Tracked</span>
+                </div>
+            </div>
+            <form class="login-form" id="faculty-login-form">
+                <div class="form-group">
+                    <label class="form-label" for="faculty-id">Employee ID</label>
+                    <input type="text" id="faculty-id" class="form-control" placeholder="Enter employee ID" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="faculty-password">Password</label>
+                    <input type="password" id="faculty-password" class="form-control" placeholder="Enter password" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="faculty-department">Department</label>
+                    <select id="faculty-department" class="form-control" required>
+                        <option value="">Select Department</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mechanical">Mechanical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="faculty-remember">
+                        Keep me logged in on this device
+                    </label>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width" id="faculty-login-btn">
+                    <span class="btn-text">Secure Login</span>
+                    <span class="btn-loader" style="display: none;">🔄</span>
+                </button>
+                <div class="login-links">
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                    <button type="button" class="btn btn--outline back-btn">Back to Selection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Admin Login -->
+    <div id="admin-login" class="screen login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Administrator Portal</h2>
+                <p>Maximum security access control</p>
+                <div class="security-indicators">
+                    <span class="security-badge">🔐 Maximum Security</span>
+                    <span class="security-badge">🔍 Audit Logged</span>
+                </div>
+            </div>
+            <form class="login-form" id="admin-login-form">
+                <div class="form-group">
+                    <label class="form-label" for="admin-id">Administrator ID</label>
+                    <input type="text" id="admin-id" class="form-control" placeholder="Enter admin ID" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="admin-password">Secure Password</label>
+                    <input type="password" id="admin-password" class="form-control" placeholder="Enter secure password" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="admin-captcha">Security Verification</label>
+                    <div class="captcha-container">
+                        <canvas class="captcha-canvas" id="captcha-canvas" width="100" height="40"></canvas>
+                        <input type="text" id="admin-captcha" class="form-control" placeholder="Enter verification code" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="admin-access-level">Access Level</label>
+                    <select id="admin-access-level" class="form-control" required>
+                        <option value="">Select Access Level</option>
+                        <option value="read">Read Only</option>
+                        <option value="write">Read/Write</option>
+                        <option value="admin">Full Administrator</option>
+                    </select>
+                </div>
+                <div class="security-indicator">
+                    <span class="security-icon">🔒</span>
+                    <span>Secure Admin Access Enabled</span>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width" id="admin-login-btn">
+                    <span class="btn-text">Authenticate</span>
+                    <span class="btn-loader" style="display: none;">🔄</span>
+                </button>
+                <div class="login-links">
+                    <a href="#" class="forgot-password">Recovery Options</a>
+                    <button type="button" class="btn btn--outline back-btn">Back to Selection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Student Dashboard with Performance Monitoring -->
+    <div id="student-dashboard" class="screen dashboard">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div class="user-avatar">👨‍🎓</div>
+                <div class="user-details-container">
+                    <h2 id="student-name">Welcome, Student</h2>
+                    <span id="student-details" class="user-details"></span>
+                    <div class="user-status">
+                        <span class="status-dot status-online"></span>
+                        <span>Online • Last sync: <span id="last-sync">now</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="performance-indicator">
+                    <span class="perf-label">Performance</span>
+                    <div class="perf-bars">
+                        <div class="perf-bar perf-excellent"></div>
+                        <div class="perf-bar perf-excellent"></div>
+                        <div class="perf-bar perf-good"></div>
+                    </div>
+                </div>
+                <button class="btn btn--outline notifications-btn" id="notifications-btn">
+                    <span>🔔</span>
+                    <span class="notification-count">3</span>
+                </button>
+                <button class="btn btn--outline logout-btn">Logout</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Performance Metrics Bar -->
+            <div class="performance-bar">
+                <div class="perf-metric">
+                    <span class="perf-label">Load Time</span>
+                    <span class="perf-value" id="student-load-time">350ms</span>
+                </div>
+                <div class="perf-metric">
+                    <span class="perf-label">Cache Hit</span>
+                    <span class="perf-value" id="student-cache-hit">96%</span>
+                </div>
+                <div class="perf-metric">
+                    <span class="perf-label">Offline Data</span>
+                    <span class="perf-value" id="student-offline">Ready</span>
+                </div>
+                <div class="perf-metric">
+                    <span class="perf-label">Sync Status</span>
+                    <span class="perf-value status-synced" id="student-sync">Synced</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card enhanced" id="student-attendance-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="student-attendance-percentage">0%</h3>
+                        <p>Overall Attendance</p>
+                        <div class="stat-trend" id="attendance-trend">
+                            <span class="trend-icon">📈</span>
+                            <span class="trend-text">+2.1% this week</span>
+                        </div>
+                    </div>
+                    <div class="stat-chart">
+                        <canvas id="student-mini-chart" width="80" height="40"></canvas>
+                    </div>
+                </div>
+                <div class="stat-card enhanced">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="student-classes-attended">0</h3>
+                        <p>Classes Attended</p>
+                        <div class="stat-detail">
+                            <span>This month: <strong id="monthly-attended">12</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card enhanced">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-info">
+                        <h3 id="student-total-classes">0</h3>
+                        <p>Total Classes</p>
+                        <div class="stat-detail">
+                            <span>Remaining: <strong id="remaining-classes">4</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card enhanced" id="student-status-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="student-status">Good</h3>
+                        <p>Performance Status</p>
+                        <div class="stat-detail">
+                            <span>Risk Level: <strong id="risk-level">Low</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid enhanced">
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Subject Performance Analytics</h3>
+                        <div class="card-actions">
+                            <button class="btn btn--sm btn--outline refresh-btn" data-target="subjects">
+                                <span>🔄</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div id="student-subjects-list" class="subjects-list enhanced"></div>
+                    </div>
+                </div>
+
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Smart QR Scanner</h3>
+                        <div class="scanner-status" id="scanner-status">
+                            <span class="status-dot status-ready"></span>
+                            <span>Ready to scan</span>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div class="qr-scanner enhanced">
+                            <div class="qr-display">
+                                <div class="scan-area" id="scan-area">
+                                    <div class="scan-overlay">
+                                        <div class="scan-line"></div>
+                                    </div>
+                                    <div class="scan-icon">📷</div>
+                                </div>
+                                <p>AI-powered QR code recognition</p>
+                            </div>
+                            <button class="btn btn--primary scan-btn enhanced-btn" id="scan-btn">
+                                <span class="btn-icon">📱</span>
+                                <span class="btn-text">Scan Attendance QR</span>
+                            </button>
+                            <div class="scan-history">
+                                <small>Last scan: <span id="last-scan">Never</span></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid enhanced">
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Predictive Analytics</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="analytics-grid">
+                            <div class="analytics-item">
+                                <span class="analytics-label">Attendance Forecast</span>
+                                <span class="analytics-value positive">📈 88.5%</span>
+                            </div>
+                            <div class="analytics-item">
+                                <span class="analytics-label">Risk Assessment</span>
+                                <span class="analytics-value low">🟢 Low Risk</span>
+                            </div>
+                            <div class="analytics-item">
+                                <span class="analytics-label">Performance Trend</span>
+                                <span class="analytics-value improving">⬆️ Improving</span>
+                            </div>
+                            <div class="analytics-item">
+                                <span class="analytics-label">Goal Achievement</span>
+                                <span class="analytics-value on-track">🎯 On Track</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Smart Notifications</h3>
+                        <span class="notification-count-badge">3</span>
+                    </div>
+                    <div class="card__body">
+                        <div id="student-notifications" class="notifications-list enhanced"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Faculty Dashboard -->
+    <div id="faculty-dashboard" class="screen dashboard">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div class="user-avatar">👨‍🏫</div>
+                <div class="user-details-container">
+                    <h2 id="faculty-name">Welcome, Faculty</h2>
+                    <span id="faculty-details" class="user-details"></span>
+                    <div class="user-status">
+                        <span class="status-dot status-online"></span>
+                        <span>Online • Teaching load: <span id="teaching-load">78%</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="performance-indicator">
+                    <span class="perf-label">System Load</span>
+                    <div class="perf-bars">
+                        <div class="perf-bar perf-excellent"></div>
+                        <div class="perf-bar perf-excellent"></div>
+                        <div class="perf-bar perf-good"></div>
+                        <div class="perf-bar perf-average"></div>
+                    </div>
+                </div>
+                <button class="btn btn--outline notifications-btn">
+                    <span>🔔</span>
+                    <span class="notification-count">5</span>
+                </button>
+                <button class="btn btn--outline logout-btn">Logout</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Faculty Performance Bar -->
+            <div class="performance-bar">
+                <div class="perf-metric">
+                    <span class="perf-label">Response Time</span>
+                    <span class="perf-value" id="faculty-response">280ms</span>
+                </div>
+                <div class="perf-metric">
+                    <span class="perf-label">Data Sync</span>
+                    <span class="perf-value" id="faculty-sync">Real-time</span>
+                </div>
+                <div class="perf-metric">
+                    <span class="perf-label">Processing Speed</span>
+                    <span class="perf-value" id="faculty-processing">Fast</span>
+                </div>
+                <div class="perf-metric">
+                    <span class="perf-label">System Health</span>
+                    <span class="perf-value status-excellent" id="faculty-health">Excellent</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card enhanced">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3 id="faculty-total-classes">0</h3>
+                        <p>Total Classes</p>
+                        <div class="stat-trend">
+                            <span class="trend-icon">📊</span>
+                            <span class="trend-text">92% efficiency</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card enhanced">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-info">
+                        <h3 id="faculty-classes-today">0</h3>
+                        <p>Classes Today</p>
+                        <div class="stat-detail">
+                            <span>Next: <strong id="next-class">ML at 2:00 PM</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card enhanced">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="faculty-avg-attendance">0%</h3>
+                        <p>Average Attendance</p>
+                        <div class="stat-trend">
+                            <span class="trend-icon">📈</span>
+                            <span class="trend-text">+3.2% improvement</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card enhanced">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="faculty-subjects-count">0</h3>
+                        <p>Subjects Teaching</p>
+                        <div class="stat-detail">
+                            <span>Students: <strong id="total-students">64</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid enhanced">
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Smart Class Actions</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="action-grid">
+                            <button class="action-card" id="generate-qr-btn">
+                                <div class="action-icon">📱</div>
+                                <h4>Generate QR</h4>
+                                <p>Smart QR with time limits</p>
+                                <div class="action-status">Ready</div>
+                            </button>
+                            <button class="action-card" id="bulk-attendance-btn">
+                                <div class="action-icon">👥</div>
+                                <h4>Bulk Attendance</h4>
+                                <p>Mark multiple students</p>
+                                <div class="action-status">Available</div>
+                            </button>
+                            <button class="action-card" id="analytics-btn">
+                                <div class="action-icon">📊</div>
+                                <h4>Live Analytics</h4>
+                                <p>Real-time insights</p>
+                                <div class="action-status">Updated</div>
+                            </button>
+                            <button class="action-card" id="reports-btn">
+                                <div class="action-icon">📈</div>
+                                <h4>Smart Reports</h4>
+                                <p>AI-generated reports</p>
+                                <div class="action-status">Ready</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Live Class Monitor</h3>
+                        <div class="live-indicator">
+                            <span class="live-dot"></span>
+                            <span>LIVE</span>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div id="faculty-live-classes" class="live-classes-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid enhanced">
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Student Engagement Analytics</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container" style="position: relative; height: 250px;">
+                            <canvas id="engagement-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card enhanced-card">
+                    <div class="card__header">
+                        <h3>Performance Insights</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="insights-list">
+                            <div class="insight-item positive">
+                                <span class="insight-icon">📈</span>
+                                <div class="insight-content">
+                                    <strong>Attendance Improved</strong>
+                                    <p>ML class attendance up 15% this week</p>
+                                </div>
+                            </div>
+                            <div class="insight-item warning">
+                                <span class="insight-icon">⚠️</span>
+                                <div class="insight-content">
+                                    <strong>At-Risk Students</strong>
+                                    <p>3 students below 75% threshold</p>
+                                </div>
+                            </div>
+                            <div class="insight-item info">
+                                <span class="insight-icon">💡</span>
+                                <div class="insight-content">
+                                    <strong>Optimization Tip</strong>
+                                    <p>Consider scheduling review session</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Admin Dashboard -->
+    <div id="admin-dashboard" class="screen dashboard">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div class="user-avatar">👨‍💼</div>
+                <div class="user-details-container">
+                    <h2 id="admin-name">Welcome, Administrator</h2>
+                    <span id="admin-details" class="user-details"></span>
+                    <div class="user-status">
+                        <span class="status-dot status-online"></span>
+                        <span>System Admin • Load: <span id="system-load">42%</span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="system-health">
+                    <span class="health-label">System Health</span>
+                    <div class="health-indicator excellent">
+                        <span class="health-dot"></span>
+                        <span>Excellent</span>
+                    </div>
+                </div>
+                <button class="btn btn--outline notifications-btn">
+                    <span>🔔</span>
+                    <span class="notification-count">7</span>
+                </button>
+                <button class="btn btn--outline logout-btn">Logout</button>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- System Performance Dashboard -->
+            <div class="system-performance-grid">
+                <div class="performance-card compact">
+                    <h4>Server Performance</h4>
+                    <div class="performance-metrics">
+                        <div class="metric">
+                            <span>CPU</span>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 45%"></div>
+                            </div>
+                            <span>45%</span>
+                        </div>
+                        <div class="metric">
+                            <span>Memory</span>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 68%"></div>
+                            </div>
+                            <span>68%</span>
+                        </div>
+                        <div class="metric">
+                            <span>Network</span>
+                            <div class="metric-bar">
+                                <div class="metric-fill" style="width: 34%"></div>
+                            </div>
+                            <span>125MB/s</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="performance-card compact">
+                    <h4>Database Health</h4>
+                    <div class="db-stats">
+                        <div class="db-stat">
+                            <span class="db-label">Query Performance</span>
+                            <span class="db-value excellent">Excellent</span>
+                        </div>
+                        <div class="db-stat">
+                            <span class="db-label">Cache Hit Ratio</span>
+                            <span class="db-value">94.2%</span>
+                        </div>
+                        <div class="db-stat">
+                            <span class="db-label">Active Connections</span>
+                            <span class="db-value">247/500</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="performance-card compact">
+                    <h4>Real-time Activity</h4>
+                    <div class="activity-stats">
+                        <div class="activity-item">
+                            <span class="activity-dot active"></span>
+                            <span>QR Scans: 15/min</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-dot syncing"></span>
+                            <span>Data Sync: 2.3s avg</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-dot processing"></span>
+                            <span>Processing: 98.7% success</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card enhanced admin-stat">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3 id="admin-total-students">0</h3>
+                        <p>Total Students</p>
+                        <div class="stat-trend">
+                            <span class="trend-icon">📊</span>
+                            <span class="trend-text">247 active now</span>
+                        </div>
+                    </div>
+                    <div class="stat-actions">
+                        <button class="btn btn--sm btn--outline">View All</button>
+                    </div>
+                </div>
+                <div class="stat-card enhanced admin-stat">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3 id="admin-avg-attendance">0%</h3>
+                        <p>System Average</p>
+                        <div class="stat-trend">
+                            <span class="trend-icon">📈</span>
+                            <span class="trend-text">+2.1% this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-actions">
+                        <button class="btn btn--sm btn--outline">Analytics</button>
+                    </div>
+                </div>
+                <div class="stat-card enhanced admin-stat warning">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <h3 id="admin-at-risk">0</h3>
+                        <p>At Risk Students</p>
+                        <div class="stat-trend">
+                            <span class="trend-icon">⬇️</span>
+                            <span class="trend-text">-5 since last week</span>
+                        </div>
+                    </div>
+                    <div class="stat-actions">
+                        <button class="btn btn--sm btn--primary">Intervene</button>
+                    </div>
+                </div>
+                <div class="stat-card enhanced admin-stat success">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <h3 id="admin-excellent">0</h3>
+                        <p>Excellent Students</p>
+                        <div class="stat-trend">
+                            <span class="trend-icon">📈</span>
+                            <span class="trend-text">+8 this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-actions">
+                        <button class="btn btn--sm btn--outline">Recognize</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid enhanced">
+                <div class="card enhanced-card admin-card">
+                    <div class="card__header">
+                        <h3>System-wide Attendance Analytics</h3>
+                        <div class="card-controls">
+                            <select class="form-control inline" id="analytics-timeframe">
+                                <option value="week">This Week</option>
+                                <option value="month" selected>This Month</option>
+                                <option value="semester">This Semester</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="attendance-trend-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card enhanced-card admin-card">
+                    <div class="card__header">
+                        <h3>Department Performance Matrix</h3>
+                        <div class="card-controls">
+                            <button class="btn btn--sm btn--outline" id="export-dept-data">Export</button>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="department-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid enhanced">
+                <div class="card enhanced-card admin-card">
+                    <div class="card__header">
+                        <h3>Critical System Alerts</h3>
+                        <div class="alert-controls">
+                            <button class="btn btn--sm btn--outline" id="mark-all-read">Mark All Read</button>
+                            <button class="btn btn--sm btn--primary" id="create-alert">Create Alert</button>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <div id="system-alerts" class="alerts-list enhanced"></div>
+                    </div>
+                </div>
+
+                <div class="card enhanced-card admin-card">
+                    <div class="card__header">
+                        <h3>Integration Status Monitor</h3>
+                    </div>
+                    <div class="card__body">
+                        <div class="integration-list">
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <h4>LMS Integration</h4>
+                                    <p>Canvas Learning Management System</p>
+                                </div>
+                                <div class="integration-status online">
+                                    <span class="status-dot"></span>
+                                    <span>Online</span>
+                                </div>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <h4>SMS Gateway</h4>
+                                    <p>Parent notification service</p>
+                                </div>
+                                <div class="integration-status online">
+                                    <span class="status-dot"></span>
+                                    <span>Online</span>
+                                </div>
+                            </div>
+                            <div class="integration-item">
+                                <div class="integration-info">
+                                    <h4>Email System</h4>
+                                    <p>Automated report delivery</p>
+                                </div>
+                                <div class="integration-status maintenance">
+                                    <span class="status-dot"></span>
+                                    <span>Maintenance</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced QR Code Modal -->
+    <div id="qr-modal" class="modal hidden">
+        <div class="modal-content enhanced">
+            <div class="modal-header">
+                <h3>Smart QR Code Generator</h3>
+                <div class="qr-timer" id="qr-timer">Valid for: 10:00</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="qr-code-display enhanced">
+                    <div class="qr-code smart-qr">
+                        <div class="qr-animation-overlay"></div>
+                        <div id="qr-code-content">📱 SMART_QR_CODE</div>
+                    </div>
+                    <div class="qr-details enhanced">
+                        <div class="qr-info-grid">
+                            <div class="qr-info-item">
+                                <span class="qr-label">Subject:</span>
+                                <span class="qr-value" id="qr-subject">Subject Name</span>
+                            </div>
+                            <div class="qr-info-item">
+                                <span class="qr-label">Time:</span>
+                                <span class="qr-value" id="qr-time">Time</span>
+                            </div>
+                            <div class="qr-info-item">
+                                <span class="qr-label">Room:</span>
+                                <span class="qr-value" id="qr-room">Room</span>
+                            </div>
+                            <div class="qr-info-item">
+                                <span class="qr-label">Code:</span>
+                                <span class="qr-value" id="qr-code-text">QR_CODE</span>
+                            </div>
+                            <div class="qr-info-item">
+                                <span class="qr-label">Scans:</span>
+                                <span class="qr-value" id="qr-scan-count">0/32</span>
+                            </div>
+                            <div class="qr-info-item">
+                                <span class="qr-label">Status:</span>
+                                <span class="qr-value status-active" id="qr-status">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="qr-actions">
+                    <button class="btn btn--outline" id="refresh-qr">Refresh Code</button>
+                    <button class="btn btn--secondary" id="extend-timer">Extend Timer</button>
+                    <button class="btn btn--primary" id="broadcast-qr">Broadcast to Class</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Center Modal -->
+    <div id="notification-modal" class="modal hidden">
+        <div class="modal-content enhanced">
+            <div class="modal-header">
+                <h3>Notification Center</h3>
+                <div class="notification-controls">
+                    <button class="btn btn--sm btn--outline" id="mark-notifications-read">Mark All Read</button>
+                </div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="notification-categories">
+                    <button class="category-btn active" data-category="all">All</button>
+                    <button class="category-btn" data-category="alerts">Alerts</button>
+                    <button class="category-btn" data-category="updates">Updates</button>
+                    <button class="category-btn" data-category="system">System</button>
+                </div>
+                <div id="notification-list" class="notification-list-modal"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
